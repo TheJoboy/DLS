@@ -19,3 +19,9 @@ export function getIsoWeekInfo(date = new Date()) {
     dateTo: sunday.toISOString().slice(0, 10)
   };
 }
+
+export function getIsoWeekInfoWeeksAgo(weeksAgo: number, baseDate = new Date()) {
+  const targetDate = new Date(baseDate);
+  targetDate.setDate(baseDate.getDate() - (weeksAgo * 7));
+  return getIsoWeekInfo(targetDate);
+}
