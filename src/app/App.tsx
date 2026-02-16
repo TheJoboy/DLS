@@ -6,11 +6,10 @@ import { EntriesScreen } from '../features/entries/EntriesScreen';
 import { AnalyticsScreen } from '../features/analytics/AnalyticsScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
 import { HomeScreen } from '../features/home/HomeScreen';
-import { getIsoWeekInfo } from '../domain/isoWeek';
+import { CreateProtocolScreen } from '../features/checkin/CreateProtocolScreen';
 
-function CreateProtocolRoute() {
-  const week = getIsoWeekInfo();
-  return <Navigate to={`/checkin/${week.isoWeekKey}`} replace />;
+function LegacyCreateProtocolRoute() {
+  return <Navigate to="/protokoll" replace />;
 }
 
 export function App() {
@@ -18,7 +17,8 @@ export function App() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<HomeScreen />} />
-        <Route path="/protokoll-anlegen" element={<CreateProtocolRoute />} />
+        <Route path="/protokoll" element={<CreateProtocolScreen />} />
+        <Route path="/protokoll-anlegen" element={<LegacyCreateProtocolRoute />} />
         <Route path="/checkin/:isoWeekKey" element={<WeeklyFormScreen />} />
         <Route path="/entries" element={<EntriesScreen />} />
         <Route path="/analytics" element={<AnalyticsScreen />} />

@@ -8,7 +8,7 @@ body { margin: 0; }
   right: 0;
   bottom: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: .5rem;
   padding: .65rem 1rem calc(.65rem + env(safe-area-inset-bottom));
   background: #ffffff;
@@ -48,6 +48,7 @@ input[type='range'] { accent-color: #2563eb; }
 .radar-card { margin: 1.25rem 0; background: #fff; border: 1px solid #d1d5db; border-radius: .6rem; padding: .5rem; }
 .radar-chart { width: 100%; height: auto; display: block; }
 .home-week-selector { max-width: 22rem; }
+.protocol-week-picker { max-width: 30rem; }
 
 .main-category-form-grid {
   display: grid;
@@ -68,4 +69,26 @@ input[type='range'] { accent-color: #2563eb; }
 
 @media (max-width: 720px) {
   .radar-card { padding: .25rem; }
+}
+
+.chart-legend {
+  list-style: none;
+  padding: 0;
+  margin: .8rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .45rem .9rem;
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+}
+
+.chart-legend-color {
+  width: .85rem;
+  height: .85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, .2);
 }

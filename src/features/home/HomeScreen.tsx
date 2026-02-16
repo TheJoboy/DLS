@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { createDefaultWeeklyMainCategoryScores } from '../../config/main-categories';
 import { getIsoWeekInfoWeeksAgo } from '../../domain/isoWeek';
 import type { WeeklyEntry } from '../../domain/models';
@@ -24,12 +23,6 @@ export function HomeScreen() {
       <p>
         {selectedWeekInfo.dateFrom} bis {selectedWeekInfo.dateTo}
       </p>
-      <nav aria-label="Schnellzugriffe" className="actions">
-        <Link className="button" to="/protokoll-anlegen">Protokoll anlegen</Link>
-        <Link className="button secondary" to="/entries">Protokolle</Link>
-        <Link className="button secondary" to="/erweiterte-auswertung">Erweiterte Auswertung</Link>
-        <Link className="button secondary" to="/settings">Einstellungen</Link>
-      </nav>
 
       <div className="field home-week-selector">
         <label htmlFor="home-week-range">Woche für Radar-Ansicht ({weeksAgo} Wochen zurück)</label>
