@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { mainCategories } from '../../config/main-categories';
+import type { MainCategoryId } from '../../domain/models';
 import type { WeeklyEntry } from '../../domain/models';
 import { weeklyEntryStore } from '../../storage/db';
 
@@ -11,6 +12,7 @@ const yMax = 10;
 
 export function AnalyticsScreen() {
   const [entries, setEntries] = useState<WeeklyEntry[]>([]);
+  const [hiddenCategories, setHiddenCategories] = useState<Set<MainCategoryId>>(new Set());
 
   useEffect(() => {
     weeklyEntryStore.getAll().then((allEntries) => {
@@ -26,6 +28,27 @@ export function AnalyticsScreen() {
 
   const xForIndex = (index: number) => chartPadding.left + ((plotWidth / Math.max(entries.length - 1, 1)) * index);
   const yForValue = (value: number) => chartPadding.top + (((yMax - value) / (yMax - yMin)) * plotHeight);
+
+  const categoryAverages = useMemo(
+    () =>
+      entries.map((entry) => {
+        const values = mainCategories.map((category) => entry.mainCategoryScores[category.id]);
+        return values.reduce((sum, value) => sum + value, 0) / values.length;
+      }),
+    [entries]
+  );
+
+  const toggleCategoryVisibility = (categoryId: MainCategoryId) => {
+    setHiddenCategories((previous) => {
+      const next = new Set(previous);
+      if (next.has(categoryId)) {
+        next.delete(categoryId);
+      } else {
+        next.add(categoryId);
+      }
+      return next;
+    });
+  };
 
   return (
     <section>
@@ -86,7 +109,37 @@ export function AnalyticsScreen() {
               </text>
             ))}
 
+            <g>
+              {categoryAverages.map((average, index) => {
+                const x = xForIndex(index);
+                const y = yForValue(average);
+                const previousAverage = categoryAverages[index - 1];
+                return (
+                  <g key={`average-${weekKeys[index]}`}>
+                    {typeof previousAverage === 'number' && (
+                      <line
+                        x1={xForIndex(index - 1)}
+                        y1={yForValue(previousAverage)}
+                        x2={x}
+                        y2={y}
+                        stroke="#111827"
+                        strokeDasharray="6 4"
+                        strokeWidth="2"
+                      />
+                    )}
+                    <circle cx={x} cy={y} r="3.5" fill="#111827">
+                      <title>{`Gesamt · ${weekKeys[index]}: ${average.toFixed(1)}/10`}</title>
+                    </circle>
+                  </g>
+                );
+              })}
+            </g>
+
             {mainCategories.map((category) => {
+              if (hiddenCategories.has(category.id)) {
+                return null;
+              }
+
               const points = entries.map((entry, index) => {
                 const x = xForIndex(index);
                 const y = yForValue(entry.mainCategoryScores[category.id]);
@@ -121,12 +174,33 @@ export function AnalyticsScreen() {
           </svg>
 
           <ul className="chart-legend" aria-label="Legende Kategorien">
-            {mainCategories.map((category) => (
-              <li key={category.id}>
-                <span className="chart-legend-color" style={{ backgroundColor: category.color }} aria-hidden="true" />
-                {category.label}
-              </li>
-            ))}
+            <li>
+              <button
+                type="button"
+                className="chart-legend-toggle"
+                disabled
+                aria-disabled="true"
+              >
+                <span className="chart-legend-color chart-legend-color--average" aria-hidden="true" />
+                <span>Gesamtlinie (immer sichtbar)</span>
+              </button>
+            </li>
+            {mainCategories.map((category) => {
+              const isHidden = hiddenCategories.has(category.id);
+              return (
+                <li key={category.id}>
+                  <button
+                    type="button"
+                    className={`chart-legend-toggle${isHidden ? ' is-inactive' : ''}`}
+                    onClick={() => toggleCategoryVisibility(category.id)}
+                    aria-pressed={!isHidden}
+                  >
+                    <span className="chart-legend-color" style={{ backgroundColor: category.color }} aria-hidden="true" />
+                    <span>{category.label}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </>
       )}
