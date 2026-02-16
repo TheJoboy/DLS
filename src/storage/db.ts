@@ -1,4 +1,4 @@
-import type { WeeklyEntry } from '../domain/models';
+import { normalizeWeeklyEntry, type WeeklyEntry } from '../domain/models';
 
 const DB_NAME = 'dls-health';
 const STORE = 'weeklyEntries';
@@ -32,14 +32,15 @@ async function withStore<T>(mode: IDBTransactionMode, action: (store: IDBObjectS
 
 export const weeklyEntryStore = {
   async getByWeek(isoWeekKey: string) {
-    return withStore<WeeklyEntry | undefined>('readonly', (s) => s.get(isoWeekKey));
+    const entry = await withStore<WeeklyEntry | undefined>('readonly', (s) => s.get(isoWeekKey));
+    return entry ? normalizeWeeklyEntry(entry) : undefined;
   },
   async getAll() {
     const entries = await withStore<WeeklyEntry[]>('readonly', (s) => s.getAll());
-    return entries.sort((a, b) => b.isoWeekKey.localeCompare(a.isoWeekKey));
+    return entries.map((entry) => normalizeWeeklyEntry(entry)).sort((a, b) => b.isoWeekKey.localeCompare(a.isoWeekKey));
   },
   async upsert(entry: WeeklyEntry) {
-    return withStore<IDBValidKey>('readwrite', (s) => s.put(entry));
+    return withStore<IDBValidKey>('readwrite', (s) => s.put(normalizeWeeklyEntry(entry)));
   },
   async delete(isoWeekKey: string) {
     return withStore<undefined>('readwrite', (s) => s.delete(isoWeekKey));
@@ -52,7 +53,7 @@ export const weeklyEntryStore = {
     await new Promise<void>((resolve, reject) => {
       const tx = db.transaction(STORE, 'readwrite');
       const store = tx.objectStore(STORE);
-      for (const entry of entries) store.put(entry);
+      for (const entry of entries) store.put(normalizeWeeklyEntry(entry));
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });

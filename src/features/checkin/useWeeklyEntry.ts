@@ -1,15 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { healthConfig } from '../../config/healthConfig';
 import { getIsoWeekInfo } from '../../domain/isoWeek';
-import type { WeeklyEntry } from '../../domain/models';
+import { normalizeWeeklyEntry, type WeeklyEntry } from '../../domain/models';
 import { weeklyEntryStore } from '../../storage/db';
+import { createDefaultWeeklyMainCategoryScores } from '../../config/main-categories';
 
 export function createDefaultEntry(isoWeekKey?: string): WeeklyEntry {
   const week = isoWeekKey ? parseWeek(isoWeekKey) : getIsoWeekInfo();
   const items = Object.fromEntries(
     healthConfig.dimensions.flatMap((d) => d.subcategories.map((s) => [s.id, { score: 5, note: '' }]))
   );
-  return { ...week, status: 'draft', items, updatedAt: new Date().toISOString() };
+  return {
+    ...week,
+    status: 'draft',
+    items,
+    mainCategoryScores: createDefaultWeeklyMainCategoryScores(),
+    updatedAt: new Date().toISOString()
+  };
 }
 
 function parseWeek(isoWeekKey: string) {
@@ -27,7 +34,7 @@ export function useWeeklyEntry(isoWeekKey: string) {
   useEffect(() => {
     setLoading(true);
     weeklyEntryStore.getByWeek(isoWeekKey).then((saved) => {
-      setEntry(saved ?? createDefaultEntry(isoWeekKey));
+      setEntry(saved ? normalizeWeeklyEntry(saved) : createDefaultEntry(isoWeekKey));
       setLoading(false);
     });
   }, [isoWeekKey]);
