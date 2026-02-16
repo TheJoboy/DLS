@@ -13,6 +13,10 @@ export function EntriesScreen() {
   return (
     <section>
       <h2>Protokolle</h2>
+      <p>
+        <Link className="button" to="/protokoll">Neues Protokoll</Link>
+      </p>
+      {entries.length === 0 && <p>Noch keine Protokolle vorhanden.</p>}
       <ul>
         {entries.map((entry) => {
           const categoryValues = mainCategories.map((category) => ({
@@ -30,7 +34,7 @@ export function EntriesScreen() {
                   <span key={category.id} className="mini-pill">{category.label}: {category.value}</span>
                 ))}
               </div>
-              <Link to={`/checkin/${entry.isoWeekKey}`}>Öffnen</Link>
+              <Link className="button secondary" to={`/checkin/${entry.isoWeekKey}`}>Bearbeiten</Link>
               <button onClick={async () => {
                 if (window.confirm(`Eintrag ${entry.isoWeekKey} löschen?`)) {
                   await weeklyEntryStore.delete(entry.isoWeekKey);

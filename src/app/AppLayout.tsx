@@ -10,9 +10,10 @@ export function AppLayout() {
         <Outlet />
       </main>
       <footer className="bottom-nav" aria-label="Hauptnavigation">
-        <NavLink to="/protokoll-anlegen">Protokoll anlegen</NavLink>
+        <NavLink to="/protokoll">Protokoll</NavLink>
         <NavLink to="/">Home</NavLink>
-        <NavLink to="/erweiterte-auswertung">erweiterte Auswertung</NavLink>
+        <NavLink to="/erweiterte-auswertung">Auswertung</NavLink>
+        <NavLink to="/settings">Einstellungen</NavLink>
       </footer>
     </div>
   );
