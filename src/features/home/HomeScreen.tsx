@@ -1,35 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createDefaultWeeklyMainCategoryScores } from '../../config/main-categories';
-import { getIsoWeekInfo } from '../../domain/isoWeek';
+import { getIsoWeekInfoWeeksAgo } from '../../domain/isoWeek';
 import type { WeeklyEntry } from '../../domain/models';
 import { weeklyEntryStore } from '../../storage/db';
 import { RadarHealthChart } from './RadarHealthChart';
 
 export function HomeScreen() {
-  const currentWeek = getIsoWeekInfo().isoWeekKey;
-  const [entries, setEntries] = useState<WeeklyEntry[]>([]);
-  const [selectedWeek, setSelectedWeek] = useState(currentWeek);
+  const [weeksAgo, setWeeksAgo] = useState(0);
+  const [selectedEntry, setSelectedEntry] = useState<WeeklyEntry | undefined>(undefined);
+
+  const selectedWeekInfo = useMemo(() => getIsoWeekInfoWeeksAgo(weeksAgo), [weeksAgo]);
 
   useEffect(() => {
-    weeklyEntryStore.getAll().then((allEntries) => {
-      setEntries(allEntries);
-      const hasCurrentWeek = allEntries.some((entry) => entry.isoWeekKey === currentWeek);
-      if (!hasCurrentWeek && allEntries.length > 0) {
-        setSelectedWeek(allEntries[0].isoWeekKey);
-      }
+    weeklyEntryStore.getByWeek(selectedWeekInfo.isoWeekKey).then((entry) => {
+      setSelectedEntry(entry);
     });
-  }, [currentWeek]);
-
-  const selectedEntry = useMemo(
-    () => entries.find((entry) => entry.isoWeekKey === selectedWeek),
-    [entries, selectedWeek]
-  );
+  }, [selectedWeekInfo.isoWeekKey]);
 
   return (
     <section>
-      <h2>Startseite</h2>
-      <p>Wähle aus, was du als Nächstes machen möchtest.</p>
+      <h2>Startseite · {selectedWeekInfo.isoWeekKey}</h2>
+      <p>
+        {selectedWeekInfo.dateFrom} bis {selectedWeekInfo.dateTo}
+      </p>
       <nav aria-label="Schnellzugriffe" className="actions">
         <Link className="button" to="/protokoll-anlegen">Protokoll anlegen</Link>
         <Link className="button secondary" to="/entries">Protokolle</Link>
@@ -38,22 +32,19 @@ export function HomeScreen() {
       </nav>
 
       <div className="field home-week-selector">
-        <label htmlFor="home-week">Woche für Radar-Ansicht</label>
-        <select
-          id="home-week"
-          value={selectedWeek}
-          onChange={(event) => setSelectedWeek(event.target.value)}
-        >
-          {entries.map((entry) => (
-            <option key={entry.isoWeekKey} value={entry.isoWeekKey}>
-              {entry.isoWeekKey}
-            </option>
-          ))}
-          {!entries.some((entry) => entry.isoWeekKey === currentWeek) && (
-            <option value={currentWeek}>{currentWeek} (aktuelle Woche, ohne Eintrag)</option>
-          )}
-        </select>
+        <label htmlFor="home-week-range">Woche für Radar-Ansicht ({weeksAgo} Wochen zurück)</label>
+        <input
+          id="home-week-range"
+          type="range"
+          min={0}
+          max={10}
+          step={1}
+          value={weeksAgo}
+          onChange={(event) => setWeeksAgo(Number(event.target.value))}
+        />
       </div>
+
+      {!selectedEntry && <p>Kein Eintrag für diese Woche vorhanden.</p>}
 
       <RadarHealthChart values={selectedEntry?.mainCategoryScores ?? createDefaultWeeklyMainCategoryScores()} />
     </section>
