@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { healthConfig } from '../config/healthConfig';
+import { createDefaultWeeklyMainCategoryScores } from '../config/main-categories';
 import { buildSeries, getDimensionAverage } from '../domain/analytics';
 import { detectConflicts } from '../domain/importExport';
 import type { WeeklyEntry } from '../domain/models';
@@ -21,6 +22,7 @@ function makeEntry(week: string, status: 'draft' | 'submitted', overrides: Parti
     dateTo: '2026-01-07',
     status,
     updatedAt: new Date().toISOString(),
+    mainCategoryScores: createDefaultWeeklyMainCategoryScores(),
     items: {
       sleep: { score: 6, note: '' },
       energy: { score: 8, note: '' },
