@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  base: '/DLS/',
   plugins: [
     react(),
     VitePWA({
@@ -11,7 +12,8 @@ export default defineConfig({
       manifest: {
         name: 'Weekly Health Check-in',
         short_name: 'HealthCheckin',
-        start_url: '/',
+        start_url: '/DLS/',
+        scope: '/DLS/',
         display: 'standalone',
         background_color: '#111827',
         theme_color: '#2563eb',
