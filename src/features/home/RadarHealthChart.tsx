@@ -8,10 +8,12 @@ type RadarHealthChartProps = {
 const sortedCategories = [...mainCategories].sort((a, b) => a.radarOrder - b.radarOrder);
 const maxScore = 10;
 const levels = 5;
-const size = 420;
-const center = size / 2;
-const radius = 130;
-const labelRadius = 175;
+const size = 560;
+const canvasPadding = 150;
+const canvasSize = size + canvasPadding * 2;
+const center = canvasSize / 2;
+const radius = 175;
+const labelRadius = 265;
 
 const iconMap: Record<string, string> = {
   activity: '✚',
@@ -47,7 +49,7 @@ export function RadarHealthChart({ values }: RadarHealthChartProps) {
 
   return (
     <figure className="radar-card">
-      <svg viewBox={`0 0 ${size} ${size}`} className="radar-chart" role="img" aria-label="Radar-Diagramm der Gesundheitskategorien">
+      <svg viewBox={`0 0 ${canvasSize} ${canvasSize}`} className="radar-chart" role="img" aria-label="Radar-Diagramm der Gesundheitskategorien">
         <g>
           {levelPolygons.map((points, index) => (
             <polygon key={`level-${index}`} points={points} fill="none" stroke="#d1d5db" strokeWidth="1" />
@@ -96,7 +98,7 @@ export function RadarHealthChart({ values }: RadarHealthChartProps) {
                   fontWeight="600"
                   fill="#111827"
                 >
-                  {category.label}
+                  {`${category.label} (${values[category.id]}/10)`}
                 </text>
               </g>
             );

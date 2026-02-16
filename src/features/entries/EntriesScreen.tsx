@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { healthConfig } from '../../config/healthConfig';
-import { getDimensionAverage, avg } from '../../domain/analytics';
+import { mainCategories } from '../../config/main-categories';
+import { avg } from '../../domain/analytics';
 import type { WeeklyEntry } from '../../domain/models';
 import { weeklyEntryStore } from '../../storage/db';
 
@@ -15,12 +15,21 @@ export function EntriesScreen() {
       <h2>Protokolle</h2>
       <ul>
         {entries.map((entry) => {
-          const means = healthConfig.dimensions.map((d) => getDimensionAverage(entry, d.id, healthConfig)).filter((v): v is number => v !== null);
+          const categoryValues = mainCategories.map((category) => ({
+            id: category.id,
+            label: category.label,
+            value: entry.mainCategoryScores[category.id]
+          }));
           return (
             <li key={entry.isoWeekKey} className="row">
               <span>{entry.isoWeekKey}</span>
               <span className={`badge ${entry.status}`}>{entry.status}</span>
-              <span>Ø {avg(means)}</span>
+              <span>Ø {avg(categoryValues.map((category) => category.value))}</span>
+              <div className="row category-values-inline">
+                {categoryValues.map((category) => (
+                  <span key={category.id} className="mini-pill">{category.label}: {category.value}</span>
+                ))}
+              </div>
               <Link to={`/checkin/${entry.isoWeekKey}`}>Öffnen</Link>
               <button onClick={async () => {
                 if (window.confirm(`Eintrag ${entry.isoWeekKey} löschen?`)) {
