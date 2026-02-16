@@ -1,0 +1,34 @@
+{
+  "configVersion": "1.0.0",
+  "dimensions": [
+    {
+      "id": "body",
+      "label": "Körper",
+      "helpText": "Wie geht es deinem Körper diese Woche?",
+      "subcategories": [
+        { "id": "sleep", "label": "Schlaf", "helpText": "Qualität und Dauer" },
+        { "id": "energy", "label": "Energie" },
+        { "id": "movement", "label": "Bewegung" }
+      ]
+    },
+    {
+      "id": "mind",
+      "label": "Geist",
+      "helpText": "Mentale Stabilität und Klarheit",
+      "subcategories": [
+        { "id": "focus", "label": "Fokus" },
+        { "id": "stress", "label": "Stressbewältigung" },
+        { "id": "mood", "label": "Stimmung" }
+      ]
+    },
+    {
+      "id": "social",
+      "label": "Soziales",
+      "subcategories": [
+        { "id": "connection", "label": "Verbundenheit" },
+        { "id": "support", "label": "Unterstützung" },
+        { "id": "boundaries", "label": "Grenzen" }
+      ]
+    }
+  ]
+}
