@@ -9,7 +9,7 @@ Die App ist eine lokale, browserbasierte React-PWA zur wöchentlichen Erfassung 
 ## 2) Technologie-Stack
 
 - **Frontend:** React 18 + TypeScript
-- **Routing:** React Router (`BrowserRouter`)
+- **Routing:** React Router (`HashRouter`) (GitHub-Pages-freundlich ohne Server-Rewrite)
 - **Build Tool:** Vite 5
 - **PWA:** `vite-plugin-pwa` inkl. Service Worker Registrierung
 - **Persistenz:** Browser-**IndexedDB** (lokal, clientseitig)
@@ -185,14 +185,23 @@ npm run preview
 
 Die Anwendung ist ein statisches SPA/PWA-Bundle und kann auf Netlify, Vercel, GitHub Pages, Nginx, Cloudflare Pages etc. betrieben werden.
 
-### Erforderliche Deploy-Regeln
+### GitHub Pages (dieses Repository)
+
+- Workflow-Datei: `.github/workflows/deploy-pages.yml`
+- Trigger: Push auf `main` oder manueller `workflow_dispatch`
+- Build: `npm ci && npm run build`
+- Veröffentlichtes Artefakt: `dist/` über `actions/upload-pages-artifact` + `actions/deploy-pages`
+- Wichtiger Basispfad: Vite-Option `base: "/DLS/"` in `vite.config.ts`
+
+### Erforderliche Deploy-Regeln (allgemein)
 
 1. **Build Command:** `npm run build`
 2. **Publish Directory:** `dist`
-3. **SPA-Fallback** für Client-Routing aktivieren:
-   - alle unbekannten Pfade auf `index.html` zurückführen.
+3. **Routing-Konzept beachten:**
+   - Die App nutzt `HashRouter`; dadurch sind direkte Refreshes von Unterseiten ohne Server-Rewrite stabil.
+   - Bei Umstellung auf `BrowserRouter` muss ein SPA-Fallback auf `index.html` aktiv sein.
 
-Beispiel Nginx:
+Beispiel Nginx (nur für BrowserRouter nötig):
 
 ```nginx
 location / {
