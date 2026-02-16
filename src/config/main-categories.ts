@@ -9,7 +9,7 @@ export type MainCategoryMeta = {
 };
 
 export const mainCategories: readonly MainCategoryMeta[] = [
-  { id: 'koerperlicheFunktion', label: 'Körperliche Funktion', iconKey: 'activity', color: '#22c55e', radarOrder: 0 },
+  { id: 'koerperlicheFunktion', label: 'Körperliche Funktionen', iconKey: 'activity', color: '#22c55e', radarOrder: 0 },
   { id: 'mentalesWohlgefuehl', label: 'Mentales Wohlgefühl', iconKey: 'brain', color: '#a855f7', radarOrder: 1 },
   { id: 'sinngebung', label: 'Sinngebung', iconKey: 'compass', color: '#0ea5e9', radarOrder: 2 },
   { id: 'lebensqualitaet', label: 'Lebensqualität', iconKey: 'sparkles', color: '#f59e0b', radarOrder: 3 },

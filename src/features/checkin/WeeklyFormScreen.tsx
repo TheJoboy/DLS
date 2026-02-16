@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { healthConfig } from '../../config/healthConfig';
+import { mainCategories } from '../../config/main-categories';
 import { weeklyEntryStore } from '../../storage/db';
 import { useWeeklyEntry } from './useWeeklyEntry';
 import { useDebounced } from './useDebounced';
@@ -51,38 +51,29 @@ export function WeeklyFormScreen() {
         }}>Abschicken</button>
       </header>
 
-      {healthConfig.dimensions.map((dimension) => (
-        <details key={dimension.id} open>
-          <summary>{dimension.label}</summary>
-          {dimension.subcategories.map((sub) => (
-            <div key={sub.id} className="field" onBlur={() => { void saveNow(); }}>
-              <label htmlFor={sub.id}>{sub.label}: <strong>{entry.items[sub.id].score}</strong></label>
-              <input
-                id={sub.id}
-                type="range"
-                min={0}
-                max={10}
-                step={1}
-                value={entry.items[sub.id].score}
-                aria-label={`${dimension.label} ${sub.label} Wert`}
-                onChange={(e) => setEntry((prev) => prev ? ({
-                  ...prev,
-                  items: { ...prev.items, [sub.id]: { ...prev.items[sub.id], score: Number(e.target.value) } }
-                }) : prev)}
-              />
-              <textarea
-                aria-label={`${dimension.label} ${sub.label} Notiz`}
-                placeholder="Notiz"
-                value={entry.items[sub.id].note}
-                onChange={(e) => setEntry((prev) => prev ? ({
-                  ...prev,
-                  items: { ...prev.items, [sub.id]: { ...prev.items[sub.id], note: e.target.value } }
-                }) : prev)}
-              />
-            </div>
-          ))}
-        </details>
-      ))}
+      <div className="main-category-form-grid">
+        {mainCategories.map((category) => (
+          <div key={category.id} className="field card" onBlur={() => { void saveNow(); }}>
+            <label htmlFor={category.id}>{category.label}: <strong>{entry.mainCategoryScores[category.id]}</strong></label>
+            <input
+              id={category.id}
+              type="range"
+              min={0}
+              max={10}
+              step={1}
+              value={entry.mainCategoryScores[category.id]}
+              aria-label={`${category.label} Wert`}
+              onChange={(e) => setEntry((prev) => prev ? ({
+                ...prev,
+                mainCategoryScores: {
+                  ...prev.mainCategoryScores,
+                  [category.id]: Number(e.target.value)
+                }
+              }) : prev)}
+            />
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

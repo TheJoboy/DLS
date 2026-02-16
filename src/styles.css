@@ -36,6 +36,7 @@ button.danger { background: #b91c1c; border-color: #991b1b; }
 .row { display: flex; gap: .7rem; align-items: center; flex-wrap: wrap; }
 .actions { display: flex; gap: .7rem; flex-wrap: wrap; margin: 1rem 0; }
 .field { margin-bottom: .75rem; display: grid; gap: .3rem; }
+.card { background: #fff; border: 1px solid #d1d5db; border-radius: .6rem; padding: .75rem; }
 .badge { border-radius: .35rem; padding: .2rem .45rem; font-size: .8rem; text-transform: uppercase; }
 .badge.draft { background: #f59e0b22; color: #92400e; }
 .badge.submitted { background: #10b98122; color: #065f46; }
@@ -47,3 +48,24 @@ input[type='range'] { accent-color: #2563eb; }
 .radar-card { margin: 1.25rem 0; background: #fff; border: 1px solid #d1d5db; border-radius: .6rem; padding: .5rem; }
 .radar-chart { width: 100%; height: auto; display: block; }
 .home-week-selector { max-width: 22rem; }
+
+.main-category-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .75rem;
+}
+
+.category-values-inline { gap: .35rem; }
+
+.mini-pill {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  padding: .15rem .5rem;
+  font-size: .8rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .radar-card { padding: .25rem; }
+}
