@@ -23,13 +23,15 @@ export type WeeklyEntry = {
   status: EntryStatus;
   items: Record<string, WeeklyItem>;
   mainCategoryScores: WeeklyMainCategoryScores;
+  protocolNote: string;
   updatedAt: string;
 };
 
-export function normalizeWeeklyEntry(entry: WeeklyEntry | (Omit<WeeklyEntry, 'mainCategoryScores'> & { mainCategoryScores?: WeeklyMainCategoryScores; })): WeeklyEntry {
+export function normalizeWeeklyEntry(entry: WeeklyEntry | (Omit<WeeklyEntry, 'mainCategoryScores' | 'protocolNote'> & { mainCategoryScores?: WeeklyMainCategoryScores; protocolNote?: string; })): WeeklyEntry {
   return {
     ...entry,
-    mainCategoryScores: entry.mainCategoryScores ?? createDefaultWeeklyMainCategoryScores()
+    mainCategoryScores: entry.mainCategoryScores ?? createDefaultWeeklyMainCategoryScores(),
+    protocolNote: entry.protocolNote ?? ''
   };
 }
 

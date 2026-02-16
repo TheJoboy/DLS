@@ -15,6 +15,7 @@ export function createDefaultEntry(isoWeekKey?: string): WeeklyEntry {
     status: 'draft',
     items,
     mainCategoryScores: createDefaultWeeklyMainCategoryScores(),
+    protocolNote: '',
     updatedAt: new Date().toISOString()
   };
 }
