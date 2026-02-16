@@ -42,18 +42,40 @@ export function SettingsScreen() {
   }
 
   return (
-    <section>
-      <h2>Einstellungen</h2>
-      <p>Daten werden lokal in deinem Browser gespeichert (IndexedDB).</p>
-      <div className="actions">
-        <button onClick={() => void onExport()}>JSON Export</button>
-        <label className="button secondary">JSON Import<input type="file" accept="application/json" onChange={(e) => void onImport(e)} hidden /></label>
-        <button className="danger" onClick={async () => {
-          if (window.confirm('Alle Daten wirklich löschen?')) {
-            await weeklyEntryStore.clear();
-            alert('Alle Daten gelöscht');
-          }
-        }}>Alle Daten löschen</button>
+    <section className="screen-stack">
+      <div className="card">
+        <h2>Einstellungen</h2>
+        <p>Daten werden lokal in deinem Browser gespeichert (IndexedDB).</p>
+      </div>
+
+      <div className="card">
+        <h3>Datenexport und Import</h3>
+        <p className="secondary-text">Sichere deine Einträge lokal als JSON oder importiere bestehende Daten.</p>
+        <div className="actions">
+          <button onClick={() => void onExport()}>JSON Export</button>
+          <label className="button outline">JSON Import<input type="file" accept="application/json" onChange={(e) => void onImport(e)} hidden /></label>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3>Speicherhinweis</h3>
+        <p className="secondary-text">Die Daten bleiben auf deinem Gerät gespeichert und werden nicht automatisch übertragen.</p>
+      </div>
+
+      <div className="card">
+        <h3>Gefahrenbereich</h3>
+        <p className="secondary-text">Diese Aktion löscht alle lokalen Daten unwiderruflich.</p>
+        <button
+          className="danger"
+          onClick={async () => {
+            if (window.confirm('Alle Daten wirklich löschen?')) {
+              await weeklyEntryStore.clear();
+              alert('Alle Daten gelöscht');
+            }
+          }}
+        >
+          Alle Daten löschen
+        </button>
       </div>
     </section>
   );
