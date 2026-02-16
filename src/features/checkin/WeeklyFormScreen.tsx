@@ -37,19 +37,25 @@ export function WeeklyFormScreen() {
   if (loading || !entry) return <p>Lade…</p>;
 
   return (
-    <section>
-      <header className="row">
-        <h2>{entry.isoWeekKey}</h2>
-        <span className={`badge ${entry.status}`}>{entry.status}</span>
-        <button onClick={() => void saveNow()}>Speichern</button>
-        <button onClick={async () => {
-          if (window.confirm('Check-in wirklich abschicken?')) {
-            await weeklyEntryStore.upsert({ ...entry, status: 'submitted', updatedAt: new Date().toISOString() });
-            toast.show('Check-in abgeschlossen');
-            navigate('/');
-          }
-        }}>Abschicken</button>
-      </header>
+    <section className="screen-stack">
+      <div className="card">
+        <header className="row">
+          <h2>{entry.isoWeekKey}</h2>
+          <span className={`badge ${entry.status}`}>{entry.status}</span>
+        </header>
+        <div className="actions">
+          <button className="outline" onClick={() => void saveNow()}>Speichern</button>
+          <button onClick={async () => {
+            if (window.confirm('Check-in wirklich abschicken?')) {
+              await weeklyEntryStore.upsert({ ...entry, status: 'submitted', updatedAt: new Date().toISOString() });
+              toast.show('Check-in abgeschlossen');
+              navigate('/');
+            }
+          }}>
+            Abschicken
+          </button>
+        </div>
+      </div>
 
       <div className="field card" onBlur={() => { void saveNow(); }}>
         <label htmlFor="protocol-note">Notiz zum Protokoll</label>

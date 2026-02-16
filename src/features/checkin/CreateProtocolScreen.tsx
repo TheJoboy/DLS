@@ -13,24 +13,26 @@ export function CreateProtocolScreen() {
   );
 
   return (
-    <section>
-      <h2>Protokoll anlegen</h2>
-      <p>Wähle die Kalenderwoche aus. Standardmäßig ist die aktuelle Woche vorausgewählt.</p>
-      <div className="field protocol-week-picker">
-        <label htmlFor="protocol-week">Kalenderwoche</label>
-        <select
-          id="protocol-week"
-          value={selectedWeek}
-          onChange={(event) => setSelectedWeek(event.target.value)}
-        >
-          {weekOptions.map((week) => (
-            <option key={week.isoWeekKey} value={week.isoWeekKey}>
-              {week.isoWeekKey} ({week.dateFrom} bis {week.dateTo})
-            </option>
-          ))}
-        </select>
+    <section className="screen-stack">
+      <div className="card">
+        <h2>Protokoll anlegen</h2>
+        <p>Wähle die Kalenderwoche aus. Standardmäßig ist die aktuelle Woche vorausgewählt.</p>
+        <div className="field protocol-week-picker">
+          <label htmlFor="protocol-week">Kalenderwoche</label>
+          <select
+            id="protocol-week"
+            value={selectedWeek}
+            onChange={(event) => setSelectedWeek(event.target.value)}
+          >
+            {weekOptions.map((week) => (
+              <option key={week.isoWeekKey} value={week.isoWeekKey}>
+                {week.isoWeekKey} ({week.dateFrom} bis {week.dateTo})
+              </option>
+            ))}
+          </select>
+        </div>
+        <button onClick={() => navigate(`/checkin/${selectedWeek}`)}>Protokoll öffnen</button>
       </div>
-      <button onClick={() => navigate(`/checkin/${selectedWeek}`)}>Protokoll öffnen</button>
     </section>
   );
 }
