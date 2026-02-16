@@ -13,6 +13,7 @@ const yMax = 10;
 export function AnalyticsScreen() {
   const [entries, setEntries] = useState<WeeklyEntry[]>([]);
   const [hiddenCategories, setHiddenCategories] = useState<Set<MainCategoryId>>(new Set());
+  const [isAverageHidden, setIsAverageHidden] = useState(false);
 
   useEffect(() => {
     weeklyEntryStore.getAll().then((allEntries) => {
@@ -109,31 +110,33 @@ export function AnalyticsScreen() {
               </text>
             ))}
 
-            <g>
-              {categoryAverages.map((average, index) => {
-                const x = xForIndex(index);
-                const y = yForValue(average);
-                const previousAverage = categoryAverages[index - 1];
-                return (
-                  <g key={`average-${weekKeys[index]}`}>
-                    {typeof previousAverage === 'number' && (
-                      <line
-                        x1={xForIndex(index - 1)}
-                        y1={yForValue(previousAverage)}
-                        x2={x}
-                        y2={y}
-                        stroke="#111827"
-                        strokeDasharray="6 4"
-                        strokeWidth="2"
-                      />
-                    )}
-                    <circle cx={x} cy={y} r="3.5" fill="#111827">
-                      <title>{`Gesamt · ${weekKeys[index]}: ${average.toFixed(1)}/10`}</title>
-                    </circle>
-                  </g>
-                );
-              })}
-            </g>
+            {!isAverageHidden && (
+              <g>
+                {categoryAverages.map((average, index) => {
+                  const x = xForIndex(index);
+                  const y = yForValue(average);
+                  const previousAverage = categoryAverages[index - 1];
+                  return (
+                    <g key={`average-${weekKeys[index]}`}>
+                      {typeof previousAverage === 'number' && (
+                        <line
+                          x1={xForIndex(index - 1)}
+                          y1={yForValue(previousAverage)}
+                          x2={x}
+                          y2={y}
+                          stroke="#111827"
+                          strokeDasharray="6 4"
+                          strokeWidth="2"
+                        />
+                      )}
+                      <circle cx={x} cy={y} r="3.5" fill="#111827">
+                        <title>{`Gesamt · ${weekKeys[index]}: ${average.toFixed(1)}/10`}</title>
+                      </circle>
+                    </g>
+                  );
+                })}
+              </g>
+            )}
 
             {mainCategories.map((category) => {
               if (hiddenCategories.has(category.id)) {
@@ -177,12 +180,12 @@ export function AnalyticsScreen() {
             <li>
               <button
                 type="button"
-                className="chart-legend-toggle"
-                disabled
-                aria-disabled="true"
+                className={`chart-legend-toggle${isAverageHidden ? ' is-inactive' : ''}`}
+                onClick={() => setIsAverageHidden((previous) => !previous)}
+                aria-pressed={!isAverageHidden}
               >
                 <span className="chart-legend-color chart-legend-color--average" aria-hidden="true" />
-                <span>Gesamtlinie (immer sichtbar)</span>
+                <span>Gesamtlinie</span>
               </button>
             </li>
             {mainCategories.map((category) => {

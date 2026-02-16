@@ -51,6 +51,20 @@ export function WeeklyFormScreen() {
         }}>Abschicken</button>
       </header>
 
+      <div className="field card" onBlur={() => { void saveNow(); }}>
+        <label htmlFor="protocol-note">Notiz zum Protokoll</label>
+        <textarea
+          id="protocol-note"
+          value={entry.protocolNote}
+          onChange={(e) => setEntry((prev) => prev ? ({
+            ...prev,
+            protocolNote: e.target.value
+          }) : prev)}
+          rows={4}
+          placeholder="Zusätzliche Notizen zum Protokoll"
+        />
+      </div>
+
       <div className="main-category-form-grid">
         {mainCategories.map((category) => (
           <div key={category.id} className="field card" onBlur={() => { void saveNow(); }}>

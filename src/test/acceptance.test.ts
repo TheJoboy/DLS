@@ -23,6 +23,7 @@ function makeEntry(week: string, status: 'draft' | 'submitted', overrides: Parti
     status,
     updatedAt: new Date().toISOString(),
     mainCategoryScores: createDefaultWeeklyMainCategoryScores(),
+    protocolNote: '',
     items: {
       sleep: { score: 6, note: '' },
       energy: { score: 8, note: '' },
